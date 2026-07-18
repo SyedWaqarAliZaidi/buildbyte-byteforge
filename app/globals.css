@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #1b2a4a;
+  --paper: #f7f3e8;
+  --paper-dim: #efe9d8;
+  --gold: #c9973f;
+  --gold-dim: #a97f34;
+  --slate: #2e3440;
+  --success: #4c7a5e;
+  --rule: rgba(27, 42, 74, 0.15);
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+  --color-gold: var(--gold);
+  --color-gold-dim: var(--gold-dim);
+  --color-slate: var(--slate);
+  --color-success: var(--success);
+  --color-rule: var(--rule);
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--paper);
+  color: var(--slate);
+  font-family: var(--font-body);
+}
+
+.ledger-rule {
+  border-top: 1px solid var(--rule);
+}
+
+.input {
+  width: 100%;
+  background: var(--paper-dim);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.95rem;
+  color: var(--slate);
+}
+
+.input:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+.serif-num {
+  font-variant-numeric: oldstyle-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
