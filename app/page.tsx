@@ -7,14 +7,13 @@ type Match = {
   name: string;
   provider: string;
   region: string;
-  level: string[];
-  field: string;
   fundingType: string;
   deadlineWindow: string;
   officialUrl: string;
   description: string;
   score: number;
   reason: string;
+  source: "live" | "curated";
 };
 
 const LEVELS = ["Intermediate", "Undergraduate", "Graduate", "PhD"];
@@ -33,6 +32,7 @@ export default function Home() {
   });
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [matches, setMatches] = useState<Match[]>([]);
+  const [mode, setMode] = useState<"live" | "curated" | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -52,6 +52,7 @@ export default function Home() {
         return;
       }
       setMatches(data.matches);
+      setMode(data.mode);
       setStatus("done");
     } catch (err: any) {
       setStatus("error");
@@ -173,8 +174,13 @@ export default function Home() {
           <section className="mt-16">
             <div className="ledger-rule mb-8" />
             <h2 className="font-display text-2xl text-ink mb-1">Your shortlist</h2>
-            <p className="text-sm text-slate/70 mb-8">
-              Ranked by fit, out of {matches.length} programs checked.
+            <p className="text-sm text-slate/70 mb-1">
+              {matches.length} matching programs, ranked by fit.
+            </p>
+            <p className="font-data text-xs text-slate/60 mb-8">
+              {mode === "live"
+                ? "Found via live web search just now."
+                : "Curated demo list — live search wasn't available this run."}
             </p>
 
             <div className="space-y-5">
@@ -219,14 +225,25 @@ function MatchCard({ match }: { match: Match }) {
       >
         {match.score}
       </div>
-      <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-display text-xl text-ink">{match.name}</h3>
+          <span
+            className="font-data text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full"
+            style={{
+              color: match.source === "live" ? "var(--success)" : "var(--gold-dim)",
+              border: `1px solid ${match.source === "live" ? "var(--success)" : "var(--gold-dim)"}`,
+            }}
+          >
+            {match.source === "live" ? "Live" : "Curated"}
+          </span>
+        </div>
+        <div className="flex flex-wrap items-baseline justify-between gap-2 mt-1">
+          <p className="text-sm text-slate/70">
+            {match.provider} &middot; {match.region} &middot; {match.fundingType}
+          </p>
           <span className="font-data text-xs text-slate/60">{match.officialUrl}</span>
         </div>
-        <p className="text-sm text-slate/70 mb-3">
-          {match.provider} &middot; {match.region} &middot; {match.fundingType}
-        </p>
         <p className="text-sm leading-relaxed mb-3">{match.reason}</p>
         <p className="font-data text-xs text-slate/60">
           Typical window: {match.deadlineWindow}

@@ -16,22 +16,29 @@ actually qualify for.
 ## What it does
 
 ScholarFind takes a short profile (citizenship, study destination, degree
-level, field, financial need, optional gender) and checks it against a
-curated register of real scholarship and grant programs - Pakistani
-government/university schemes plus major international ones (Fulbright,
-Chevening, DAAD, Erasmus Mundus, and more).
+level, field, financial need, optional gender) and finds scholarship and
+grant programs it plausibly qualifies for.
 
-Claude reasons over the *whole* profile against *every* program at once and
-returns a ranked shortlist with a plain-English explanation for each score -
-not a keyword filter, an eligibility read.
+It tries two paths, in order:
+
+1. **Live search** - Gemini's Google Search grounding tool searches the web
+   in real time and returns currently-active programs it found evidence
+   for, with a ranked score and plain-English reasoning per program.
+2. **Curated fallback** - if live search isn't available on the API key's
+   tier (or fails for any reason), the app instead scores the profile
+   against a curated local list of ~24 real Pakistani and international
+   scholarship programs (`data/scholarships.json`).
+
+Every result on screen is labeled **Live** or **Curated** so it's always
+clear which path produced it.
 
 ## Tech stack
 
 - **Next.js 16 (App Router) + TypeScript** - frontend & API route
 - **Tailwind CSS v4** - styling
-- **Claude (Anthropic API)** - the matching/reasoning engine
+- **Gemini API (`gemini-2.5-flash`, with Google Search grounding)** - the matching/reasoning engine
 - **Vercel** - deployment
-- Curated JSON dataset of ~24 real scholarship/grant programs (`data/scholarships.json`)
+- Curated JSON dataset of ~24 real scholarship/grant programs as fallback (`data/scholarships.json`)
 
 ## Live demo
 
@@ -41,7 +48,7 @@ not a keyword filter, an eligibility read.
 
 ```bash
 npm install
-cp .env.example .env.local   # then paste your own Anthropic API key
+cp .env.example .env.local   # then paste your own free Gemini API key
 npm run dev
 ```
 
@@ -51,15 +58,15 @@ Open http://localhost:3000
 
 | Variable | Where to get it | Required |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | https://console.anthropic.com/ | Yes |
+| `GEMINI_API_KEY` | https://aistudio.google.com/apikey (free, no card) | Yes |
 
 ## Notes for judges
 
-- The scholarship dataset is a curated demo set for the hackathon, not a
-  live scrape - deadlines and criteria are labeled as typical windows, and
-  the app tells users to confirm details on the official site before
-  applying. A production version would refresh this from official sources
-  on a schedule.
+- No paid API key is required to run or judge this project - Gemini's free
+  tier covers `gemini-2.5-flash`.
+- Live web search grounding may fall back to the curated list depending on
+  the key's tier/quota; the UI always discloses which path served each
+  result, so nothing is presented as more current than it is.
 - The one thing we optimized for: an honest, explainable match - the model
   is explicitly instructed to score low rather than be generous when a hard
   requirement (region, degree level) isn't met.
