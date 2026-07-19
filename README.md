@@ -2,6 +2,7 @@
 
 **Team:** ByteForge
 **Members:** Syed Waqar Ali Zaidi (solo)
+**Figma/design link:** None - the UI was designed directly in code, no separate design file.
 
 Built for **BuildByte** (IEEE SB NED), 18-19 July 2026.
 
